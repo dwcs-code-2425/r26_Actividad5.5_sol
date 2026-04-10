@@ -24,6 +24,16 @@ class Libro
     )]
     private ?string $titulo = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+     #[Assert\NotBlank(message: "La descripción es obligatoria", normalizer:"trim")]
+     #[Assert\Length(
+        min: 10,
+        max: 255,
+        minMessage: "La descripción debe tener al menos {{ limit }} caracteres",
+        maxMessage: "La descripción no puede superar {{ limit }} caracteres"
+    )]
+    private ?string $descripcion = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -37,6 +47,18 @@ class Libro
     public function setTitulo(string $titulo): static
     {
         $this->titulo = $titulo;
+
+        return $this;
+    }
+
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(?string $descripcion): static
+    {
+        $this->descripcion = $descripcion;
 
         return $this;
     }
