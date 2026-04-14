@@ -104,10 +104,10 @@ final class ApiLibroController extends AbstractController
             return $this->json($error, Response::HTTP_BAD_REQUEST);
         }
 
-        $error = $this->formatResponseOnInvalidFields($data, "descripcion", 'Invalid JSON');
-        if ($error) {
-            return $this->json($error, Response::HTTP_BAD_REQUEST);
-        }
+        // $error = $this->formatResponseOnInvalidFields($data, "descripcion", 'Invalid JSON');
+        // if ($error) {
+        //     return $this->json($error, Response::HTTP_BAD_REQUEST);
+        // }
 
 
 
