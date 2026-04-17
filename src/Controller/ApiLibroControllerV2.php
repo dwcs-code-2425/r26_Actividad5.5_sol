@@ -18,6 +18,8 @@ use Symfony\Component\Validator\Constraints\Json;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+use OpenApi\Attributes as OA;
+
 #[Route('/api/v2', name: 'app_api_v2')]
 final class ApiLibroControllerV2 extends AbstractController
 {
@@ -29,6 +31,29 @@ final class ApiLibroControllerV2 extends AbstractController
     const MAX_LENGTH_DESC = 255;
 
     #[Route('/libros', name: 'libros', methods: ['GET'])]
+    #[OA\Get(
+        path: '/api/v2/libros',
+        summary: 'Lista de libros',
+        description: 'Devuelve un listado completo de libros',
+        tags: ['Libros'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Listado de libros',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(
+                        type: 'object',
+                        properties: [
+                            new OA\Property(property: 'id', type: 'integer'),
+                            new OA\Property(property: 'titulo', type: 'string'),
+                            new OA\Property(property: 'descripcion', type: 'string')
+                        ]
+                    )
+                )
+            )
+        ]
+    )]
     public function index(LibroRepository $repo): JsonResponse
     {
         return $this->json($repo->findAll());
@@ -64,7 +89,37 @@ final class ApiLibroControllerV2 extends AbstractController
 
 
     #[Route('/libros', name: 'libro_create_validacion_symf', methods: ['POST'])]
+    #[OA\Post(
+        path: '/api/v2/libros',
+        summary: 'Crea un nuevo libro',
+        tags: ['Libros'],
 
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['titulo'],
+                properties: [
+                    new OA\Property(property: 'titulo', type: 'string'),
+                    new OA\Property(property: 'descripcion', type: 'string')
+                ]
+            )
+        ),
+
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Libro creado',
+                content: new OA\JsonContent(
+                    type: 'object',
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer'),
+                        new OA\Property(property: 'titulo', type: 'string'),
+                        new OA\Property(property: 'descripcion', type: 'string')
+                    ]
+                )
+            )
+        ]
+    )]
     public function createLibroConValidacion(
         Request $request,
         ValidatorInterface $validator,
