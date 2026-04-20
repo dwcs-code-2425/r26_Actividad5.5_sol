@@ -363,6 +363,47 @@ class ApiLibroControllerV2Test extends WebTestCase
             [],
             ['CONTENT_TYPE' => 'application/json'],
             json_encode([
+                'titulo' => 'Modificado',
+               
+            ])
+        );
+
+
+      
+        
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
+      public function testPutLibroSoloDescNOK(): void
+    {
+
+
+        // primero crear uno
+        $this->client->request(
+            'POST',
+            '/api/v2/libros',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
+                'titulo' => 'Original',
+                'descripcion' => 'Descripcion válida para test'
+            ])
+        );
+
+        $this->assertResponseStatusCodeSame(201);
+
+        $content = json_decode($this->client->getResponse()->getContent(), true);
+        $id = $content['id'];
+
+        // PUT
+        $this->client->request(
+            'PUT',
+            "/api/v2/libros/$id",
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode([
                 'descripcion' => 'Modificado',
                
             ])
