@@ -227,7 +227,88 @@ final class ApiLibroControllerV2 extends AbstractController
 
 
     #[Route('/libros/{id}', name: 'libro_update_partial_validacion', methods: ['PATCH'])]
+    #[OA\Patch(
+        tags: ['Libros', 'Librosv2'],
+        // Parámetro obligatorio en la ruta
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                description: 'ID del libro',
+                schema: new OA\Schema(
+                    type: 'integer',
+                    format: 'int64',
+                    example: 123
+                )
+            )
+        ],
 
+
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'titulo', type: 'string'),
+                    new OA\Property(property: 'descripcion', type: 'string')
+                ]
+            )
+        ),
+
+        responses: [
+            new OA\Response(
+                response: 404,
+                description: 'Libro no encontrado',
+                content: new OA\JsonContent(
+                    type: 'object',
+                    properties: [
+                        new OA\Property(property: 'error', type: 'string', example: 'Libro not found')
+                    ]
+                )
+            ),
+
+
+            new OA\Response(
+                response: 400,
+                description: 'JSON inválido o error de validación',
+                content: new OA\JsonContent(
+                    type: 'object',
+                    properties: [
+                        new OA\Property(property: 'error', type: 'string', example: 'Validation failed'),
+                        new OA\Property(
+                            property: 'fields',
+                            type: 'object',
+                            additionalProperties: true
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 200,
+                description: 'Actualización parcial exitosa',
+                content: new OA\JsonContent(
+                    type: 'object',
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer'),
+                        new OA\Property(property: 'titulo',   type: 'string'),
+                        new OA\Property(property: 'descripcion',   type: 'string'),
+                    ]
+                )
+            )
+
+
+
+        ]
+    )]
+    /**
+     * Actualizar parcialmente un Libro
+     * @param int $id Identificador del libro a actualizar
+     * @param LibroRepository $repo
+     * @param Request $request
+     * @param ValidatorInterface $validator
+     * @param EntityManagerInterface $em
+     * @return JsonResponse
+     */
     public function updateParcialLibroConValidacion(
         int $id,
         LibroRepository $repo,
